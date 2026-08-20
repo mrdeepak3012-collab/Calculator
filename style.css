@@ -1,0 +1,347 @@
+/* =========================================================
+   DESIGN TOKENS
+   A soft, light "frosted glass under sunlight" theme.
+   Four pastel accents, each mapped to one operator, so the
+   button colour itself tells you what kind of action it is.
+   ========================================================= */
+:root {
+  /* base surface */
+  --bg-a: #f5f8fc;
+  --bg-b: #eef1fb;
+  --card-bg: rgba(255, 255, 255, 0.55);
+  --card-border: rgba(255, 255, 255, 0.8);
+
+  /* ink */
+  --ink-900: #1f2430;
+  --ink-500: #6b7280;
+  --ink-300: #a6adbb;
+
+  /* pastel accents, one per operator */
+  --sky: #38bdf8;      /* divide   */
+  --sky-soft: #bee7fd;
+  --purple: #a78bfa;   /* multiply */
+  --purple-soft: #ded3fd;
+  --mint: #34d399;     /* add      */
+  --mint-soft: #bdf3dc;
+  --pink: #f472b6;     /* subtract */
+  --pink-soft: #fbcfe8;
+
+  /* equals: a blend of all four, the "hero" button */
+  --equals-grad: linear-gradient(135deg, var(--sky) 0%, var(--purple) 45%, var(--pink) 100%);
+
+  --radius-lg: 32px;
+  --radius-md: 20px;
+  --radius-sm: 16px;
+
+  --shadow-card: 0 30px 60px -20px rgba(90, 100, 140, 0.35), 0 10px 20px -10px rgba(90, 100, 140, 0.15);
+  --transition: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================================
+   RESET & BASE
+   ========================================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: "Inter", system-ui, sans-serif;
+  color: var(--ink-900);
+  background: radial-gradient(circle at 20% 15%, var(--bg-a), var(--bg-b) 60%);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Respect users who don't want motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* =========================================================
+   AMBIENT BACKGROUND GLOW
+   Two soft, slow-drifting colour blobs behind the card that
+   give the whole page a gentle "light through glass" feel.
+   ========================================================= */
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.glow-one {
+  width: 420px;
+  height: 420px;
+  top: -120px;
+  left: -100px;
+  background: radial-gradient(circle, var(--sky-soft), transparent 70%);
+  animation: drift-one 14s ease-in-out infinite alternate;
+}
+
+.glow-two {
+  width: 380px;
+  height: 380px;
+  bottom: -140px;
+  right: -100px;
+  background: radial-gradient(circle, var(--pink-soft), transparent 70%);
+  animation: drift-two 16s ease-in-out infinite alternate;
+}
+
+@keyframes drift-one {
+  to { transform: translate(40px, 30px) scale(1.08); }
+}
+@keyframes drift-two {
+  to { transform: translate(-30px, -25px) scale(1.05); }
+}
+
+/* =========================================================
+   CALCULATOR CARD
+   ========================================================= */
+.calculator {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 360px;
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-card);
+}
+
+/* =========================================================
+   DISPLAY
+   ========================================================= */
+.display {
+  border-radius: var(--radius-md);
+  padding: 26px 20px 20px;
+  margin-bottom: 20px;
+  min-height: 118px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  background: linear-gradient(160deg, #ffffff, #f3f6fc);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.9),
+    inset 0 -1px 10px rgba(160, 170, 210, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+/* a faint glowing ring around the display, like it's lit from within */
+.display::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 40px -6px rgba(167, 139, 250, 0.25);
+  pointer-events: none;
+}
+
+.display__history {
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink-300);
+  min-height: 20px;
+  letter-spacing: 0.01em;
+  word-break: break-all;
+  text-align: right;
+}
+
+.display__value {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 8vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+  word-break: break-all;
+  text-align: right;
+  text-shadow: 0 0 24px rgba(56, 189, 248, 0.18);
+  transition: font-size var(--transition);
+}
+
+.display__value.is-error {
+  color: #ef4444;
+  text-shadow: 0 0 24px rgba(239, 68, 68, 0.25);
+}
+
+/* =========================================================
+   KEY GRID
+   ========================================================= */
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* =========================================================
+   BASE KEY STYLE
+   ========================================================= */
+.key {
+  border: none;
+  border-radius: var(--radius-sm);
+  height: 64px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--ink-900);
+  background: linear-gradient(160deg, #ffffff, #f2f4fa);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 6px 14px -8px rgba(90, 100, 140, 0.35);
+  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.key:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 10px 20px -8px rgba(90, 100, 140, 0.4);
+}
+
+.key:active,
+.key.is-pressed {
+  transform: translateY(1px) scale(0.96);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 2px 6px -2px rgba(90, 100, 140, 0.4);
+}
+
+.key:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 3px;
+}
+
+/* number keys sit slightly quieter than the coloured action keys */
+.key--num {
+  color: var(--ink-900);
+  font-weight: 500;
+}
+
+/* utility keys: C, DEL, % — soft neutral with a hint of ink */
+.key--utility {
+  color: var(--ink-500);
+  font-size: 1.05rem;
+  background: linear-gradient(160deg, #ffffff, #eef0f7);
+}
+
+.key--zero {
+  grid-column: span 2;
+}
+
+/* =========================================================
+   OPERATOR KEYS — each has its own pastel identity + glow
+   ========================================================= */
+.key--op {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.key--divide {
+  background: linear-gradient(160deg, var(--sky), #0ea5e9);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 8px 18px -8px rgba(56, 189, 248, 0.65);
+}
+.key--multiply {
+  background: linear-gradient(160deg, var(--purple), #8b5cf6);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 8px 18px -8px rgba(167, 139, 250, 0.65);
+}
+.key--subtract {
+  background: linear-gradient(160deg, var(--pink), #ec4899);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 8px 18px -8px rgba(244, 114, 182, 0.65);
+}
+.key--add {
+  background: linear-gradient(160deg, var(--mint), #10b981);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 8px 18px -8px rgba(52, 211, 153, 0.65);
+}
+
+.key--op:hover {
+  filter: brightness(1.08);
+}
+
+/* the active operator (currently selected) glows brighter, like a pressed toggle */
+.key--op.is-active {
+  filter: brightness(1.12);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65) inset, 0 0 24px -4px currentColor;
+}
+
+/* =========================================================
+   EQUALS — the hero key, gradient of all three accents
+   ========================================================= */
+.key--equals {
+  grid-column: span 1;
+  color: #ffffff;
+  font-size: 1.5rem;
+  background: var(--equals-grad);
+  background-size: 160% 160%;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 10px 26px -8px rgba(139, 92, 246, 0.55);
+  animation: equals-breathe 5s ease-in-out infinite;
+}
+
+.key--equals:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 14px 30px -6px rgba(139, 92, 246, 0.65);
+  background-position: 100% 0%;
+}
+
+.key--equals:active,
+.key--equals.is-pressed {
+  transform: translateY(1px) scale(0.96);
+}
+
+@keyframes equals-breathe {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* =========================================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================================= */
+
+/* Small phones */
+@media (max-width: 340px) {
+  .calculator { padding: 16px; }
+  .key { height: 56px; font-size: 1.1rem; }
+  .display__value { font-size: clamp(1.6rem, 9vw, 2.2rem); }
+}
+
+/* Tablets and up: a little more breathing room */
+@media (min-width: 600px) {
+  .calculator {
+    max-width: 400px;
+    padding: 28px;
+  }
+  .key { height: 70px; font-size: 1.35rem; }
+}
+
+/* Desktops: subtle scale-up, card floats a bit larger */
+@media (min-width: 1024px) {
+  .calculator { max-width: 420px; }
+  .key { height: 74px; }
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculator</title>
+
+  <!-- Google Fonts: Space Grotesk for the display/numbers, Inter for UI text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Ambient glow blobs sitting behind the card, purely decorative -->
+  <div class="ambient-glow glow-one" aria-hidden="true"></div>
+  <div class="ambient-glow glow-two" aria-hidden="true"></div>
+
+  <main class="calculator" id="calculator">
+
+    <!-- Display area: shows the running expression and the live result -->
+    <div class="display" id="display">
+      <div class="display__history" id="history" aria-live="off"></div>
+      <div class="display__value" id="result" aria-live="polite">0</div>
+    </div>
+
+    <!-- Button grid -->
+    <div class="keys">
+
+      <button class="key key--utility" data-action="clear">C</button>
+      <button class="key key--utility" data-action="delete" aria-label="Delete">⌫</button>
+      <button class="key key--utility" data-action="percent">%</button>
+      <button class="key key--op key--divide" data-action="operator" data-value="÷">÷</button>
+
+      <button class="key key--num" data-value="7">7</button>
+      <button class="key key--num" data-value="8">8</button>
+      <button class="key key--num" data-value="9">9</button>
+      <button class="key key--op key--multiply" data-action="operator" data-value="×">×</button>
+
+      <button class="key key--num" data-value="4">4</button>
+      <button class="key key--num" data-value="5">5</button>
+      <button class="key key--num" data-value="6">6</button>
+      <button class="key key--op key--subtract" data-action="operator" data-value="−">−</button>
+
+      <button class="key key--num" data-value="1">1</button>
+      <button class="key key--num" data-value="2">2</button>
+      <button class="key key--num" data-value="3">3</button>
+      <button class="key key--op key--add" data-action="operator" data-value="+">+</button>
+
+      <button class="key key--num key--zero" data-value="0">0</button>
+      <button class="key key--num" data-value=".">.</button>
+      <button class="key key--equals" data-action="equals">=</button>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
